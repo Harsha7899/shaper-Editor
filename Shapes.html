@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>2D Shape Editor</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            
+background: linear-gradient(135deg, #ff00c8, #3700ff, #00f0ff);
+
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        #main-container {
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        #canvasContainer {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 10px;
+            background: white;
+        }
+
+        #myCanvas {
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
+
+        #toolbar {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #ff0080;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        button:hover {
+            background-color: #cc0066;
+        }
+
+        select, input[type="file"] {
+            padding: 6px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        p {
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        a {
+            margin-left: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        #toolbar1, #toolbar2, #toolbar3, #toolbar5 {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+
+        #main-container {
+            margin-top: 10px;
+            display: flex;
+        }
+
+        #canvasContainer {
+            flex: 1;
+            cursor: crosshair;
+        }
+
+        #myCanvas {
+            border: 1px solid black;
+            cursor: crosshair;
+        }
+
+        #instructions {
+            margin-left: 20px;
+        }
+
+        #toolbar {
+            display: flex;
+            flex-direction: column;
+            /* Stack elements vertically */
+        }
+
+        #toolbar5 {
+            display: flex;
+            flex-direction: row;
+            /* Stack elements vertically */
+        }
+
+        #toolbar1 {
+            display: flex;
+            flex-direction: row;
+            /* Stack elements vertically */
+        }
+
+        #toolbar2 {
+            display: flex;
+            flex-direction: row;
+            /* Stack elements vertically */
+        }
+
+        #toolbar3 {
+            display: flex;
+            flex-direction: row;
+            /* Stack elements vertically */
+        }
+
+        button {
+            margin-right: 5px;
+        }
+
+        #shapeSelect {
+            margin-right: 10px;
+        }
+
+        #colorSelect {
+            margin-right: 10px;
+        }
+
+        #thicknessSelect {
+            margin-right: 10px;
+        }
+    </style>
+
+
+
+<style>
+.grid-visible {
+    background-color: #e0e0e0;
+    background-image: linear-gradient(#000000 1px, transparent 1px),
+                      linear-gradient(90deg, #000000 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+.grid-hidden {
+    background-color: #e0e0e0;
+    background-image: none !important;
+}
+</style>
+
+<script>
+    function Grid() {
+        const canvas = document.getElementById('myCanvas');
+        canvas.classList.toggle('grid-visible');
+        canvas.classList.toggle('grid-hidden');
+    }
+</script>
+
+</head>
+
+<body>
+    <div id="main-container" style="margin: 0 auto; width: fit-content;">
+        <div id="canvasContainer">
+            <canvas id="myCanvas" class="grid-hidden" width="780" height="720"  width="780" height="720" style="background-color: #7BC2F2;"></canvas>
+            <!--<div id="grid" style="position: absolute; top: 0; left: 0; display: none;"></div> -->
+        </div>
+        <div style="margin-left: 20px;">
+            <!-- This empty div adds a blank line with a top margin of 20px -->
+        </div>
+        <div id="toolbar">
+            <p style="font-weight: bold; font-size: 40px;">Instructions for 2D Shape Editor</p>
+            <p style="font-weight: bold; font-size: 20px;">Click on the below buttons for corresponsing functions:</p>
+            <div id="toolbar1">
+                <button onclick="newPage()" title="Start a new canvas">New</button>
+                <button onclick="undo()" title="Undo the last action">Undo</button>
+                <button onclick="redo()" title="Redo the last action">Redo</button>
+                <button onclick="copy()" title="Copy an object">Copy</button>
+                <button onclick="paste()" title="Paste an object">Paste</button>
+                <button onclick="save()" title="Save the objects in JSON">Save JSON</button>
+                <button onclick="saveAsImage()" title="Save the objects in JPEG">Save JPEG</button>
+                <button onclick="Grid()" title="Toggle Grid on and off">Grid</button>
+                <a href="help.html" target="_blank">Help</a>
+            </div>
+            
+<div id="toolbar4">
+    <button onclick="setMode('draw')" title="Draw new shapes">Draw</button>
+    <button onclick="setMode('move')" title="Enable move/translate mode">Translate</button>
+    <button onclick="setMode('scale')" title="Enable scale mode">Scale</button>
+    <button onclick="setMode('rotate')" title="Enable rotate mode">Rotate</button>
+</div>
+
+<div id="toolbar5">
+                <button onclick="zoomIn()" title="Zoom In">Zoom-In</button>
+                <button onclick="zoomOut()" title="Zoom Out">Zoom-Out</button>
+                <button onclick="exportToPDF()">Export as PDF</button>
+<button onclick="exportToLaTeX()">Export LaTeX</button>
+            </div>
+            <div style="margin-top: 30px;">
+                <!-- This empty div adds a blank line with a top margin of 20px -->
+            </div>
+            <p style="font-weight: bold; font-size: 20px;">Browse a JSON file and click load to load it to the
+                canvas.(Note: Already existing objects will get cleared.)</p>
+            <div id="toolbar2">
+                <input type="file" id="fileInput" accept=".json">
+                <button onclick="load()">Load</button>
+            </div>
+            <div style="margin-top: 30px;">
+                <!-- This empty div adds a blank line with a top margin of 20px -->
+            </div>
+            <p style="font-weight: bold; font-size: 20px;">Select the shape from the below dropdown. You can choose the
+                colour and thickness as well.</p>
+            <div id="toolbar3">
+                <label for="shapeSelect">Select shape:</label>
+                <select id="shapeSelect">
+                    <option value="line">Line </option>
+                    <option value="triangle">Triangle</option>
+                    <option value="square">Square</option>
+                    <option value="rectangle">Rectangle</option>
+                    <option value="circle">Circle</option>
+                    <option value="ellipse">Ellipse</option>
+                    <option value="curve">Curve</option>
+                    <option value="polyline">Poly-line</option>
+                    <option value="polygon">Polygon</option>
+<option value="text">Text</option>
+                </select>
+                <label for="colorSelect">Select color:</label>
+                <select id="colorSelect">
+                    <option value="blue">Blue</option>
+                    <option value="purple">Purple</option>
+                    <option value="green">Green</option>
+                    <option value="brown">Brown</option>
+                </select>
+                <label for="thicknessSelect">Select thickness:</label>
+                <select id="thicknessSelect">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <!--<label for="modeSelect">Mode:</label>
+                <select id="modeSelect" onchange="setMode(this.value)">
+                    <option value="draw">Select</option>
+                    <option value="move">move</option>
+                    <option value="scale">scale</option>
+                    <option value="rotate">Rotate</option>
+                </select> -->
+            </div>
+        </div>
+
+    </div>
+    
+<div id="toolbarAttributes" style="margin-top: 20px;">
+    <p><strong>Edit Attributes</strong></p>
+    <label for="attrColor">Color:</label>
+    <input type="color" id="attrColor" onchange="updateAttribute('color', this.value)">
+    <label for="attrThickness">Thickness:</label>
+    <input type="number" id="attrThickness" min="1" max="10" onchange="updateAttribute('thickness', this.value)">
+    <label for="attrFontSize">Font Size:</label>
+    <input type="number" id="attrFontSize" min="10" max="100" onchange="updateAttribute('fontSize', this.value)">
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+    <script defer src="script.js"></script>
+
+</body>
+
+</html>
